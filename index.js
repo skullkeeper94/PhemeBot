@@ -3,11 +3,13 @@ const client = new discord.Client();
 const prefix = '!';
 const NXErrorCodes = require('./NXErrorCodes.js');
 var fs = require('fs');
+var os = require('os');
+const version = '0.1.0';
 
 //Run when the bot is ready
 client.on('ready', () => {
     //Set the bot status text
-    client.user.setPresence({ activity: { name: 'commands', type: 2 }, status: 'idle' });
+    client.user.setPresence({ activity: { name: '!help', type: 2 }, status: 'idle' });
 });
 
 //Message received
@@ -16,6 +18,7 @@ client.on('message', msg =>{
     if(msg.content[0] != prefix) return;
     //Get the command text
     const commandText = msg.content.toLowerCase().split(' ')[0];
+
     switch (commandText) {
         //Toggle the tester role
         case prefix + 'tester':
@@ -53,7 +56,32 @@ client.on('message', msg =>{
         .addFields({name: 'Module', value: NXErrorCodes.NXModules[module].moduleName, inline: true}, {name: 'Description', value: description, inline: true});
         msg.channel.send(errorEmbed);
         break;
+        //Help command
+        case prefix + 'help':
+        var helpEmbed = new discord.MessageEmbed()
+        .setColor('#fefefe')
+        .setTitle('Pheme commands')
+        .setDescription('The following commands are supported (non case sensitive)')
+        .addFields({name: prefix + 'Help', value: 'Gives info about Pheme commands (obviously)'}, {name: prefix + 'About', value: 'Gives info about Pheme'}, {name: prefix + 'Tester', value: 'Toggles if you are a tester'}, {name: prefix + 'Serr <error code>', value: 'Gives info about a Nintendo Switch error code'});
+        msg.channel.send(helpEmbed);
+        break;
+        //about command
+        case prefix + 'about':
+        var aboutEmbed = new discord.MessageEmbed()
+        .setColor('#fefefe')
+        .setTitle('About')
+        .setDescription('Pheme by CompSciOrBust')
+        .addFields({name: 'Version', value: version, inline: true}, {name: 'Host OS', value: os.type(), inline: true});
+        msg.channel.send(aboutEmbed);
+        break;
     }
+});
+
+//When someone joins the server
+client.on('guildMemberAdd', member =>{
+    const generalChannel = member.guild.channels.cache.find(channel => channel.name == 'general');
+    const rulesChannel = member.guild.channels.cache.find(channel => channel.name == 'rules');
+    generalChannel.send('<@' + member.id + '> Welcome to the ' + member.guild.name + ' Discord server! Please read <#' + rulesChannel.id + '>!');
 });
 
 //Log the bog in
