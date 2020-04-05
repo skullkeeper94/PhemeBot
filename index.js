@@ -52,7 +52,7 @@ client.on('message', msg =>{
         var errorEmbed = new discord.MessageEmbed()
         .setColor('#fc0303')
         .setTitle('Switch error code info')
-        .setDescription('Description place holder')
+        .setDescription(NXErrorCodes.NXModules[module].descriptions[description])
         .addFields({name: 'Module', value: NXErrorCodes.NXModules[module].moduleName, inline: true}, {name: 'Description', value: description, inline: true});
         msg.channel.send(errorEmbed);
         break;
